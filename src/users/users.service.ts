@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/create_user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/schemas/user.schema';
 import { Model } from 'mongoose';
+import { LoginUserDto } from './dto/login_user.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
-    const user = await this.userModel.findOne({ email });
+    const user = await this.findUserByEmail(email);
     if (!user) {
       const newUser = new this.userModel(createUserDto);
       const savedUser = await newUser.save();
@@ -26,6 +27,17 @@ export class UsersService {
     }
   }
 
+  async findUserByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+    return user;
+  }
+
+  async updateUserById(id: string, updateProfileDto: UpdateUserDto) {
+    const user = await this.userModel.findByIdAndUpdate(id, updateProfileDto, {
+      new: true,
+    });
+    return user;
+  }
   // ---------------------------------------old code-----------------------------------------
   // private users = [
   //   { id: 1, name: 'Alice', role: 'intern', email: 'alice@example.com' },
