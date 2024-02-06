@@ -24,7 +24,7 @@ import { ResponseService } from 'src/response/response.service';
 import { LoginUserDto } from './dto/login_user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/auth-guard/auth.guard';
 // import { response } from 'express';
 
 interface extendedRequest extends Request {
@@ -45,7 +45,6 @@ export class UsersController {
       const user = await this.usersService.findUserByEmail(
         createUserDto?.email,
       );
-      console.log('---user---', user);
       if (!user) {
         const { password } = createUserDto;
         const hashedPassword =
@@ -54,7 +53,7 @@ export class UsersController {
           ...createUserDto,
           password: hashedPassword,
         });
-        res
+        return res
           .status(HttpStatus.CREATED)
           .json({ message: 'user created successfully', newUser });
       }
@@ -87,7 +86,11 @@ export class UsersController {
       );
 
       if (comparePassword) {
-        const payload = { email: user?.email, id: user?._id };
+        const payload = {
+          email: user?.email,
+          id: user?._id,
+          // exp: Math.floor(Date.now() / 1000) + 60 * 60, //1h
+        };
         const token = await this.jwtService.signAsync(payload, {
           expiresIn: '1h',
           secret: 'hjvjhvjhvb',

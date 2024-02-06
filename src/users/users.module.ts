@@ -5,6 +5,7 @@ import { User, userSchema } from 'src/schemas/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PasswordService } from 'src/password/password.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtVerifyService } from 'src/jwt-verify/jwt-verify.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
     // }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, PasswordService, JwtService],
+  providers: [UsersService, PasswordService, JwtService, JwtVerifyService],
 })
 export class UsersModule {}
