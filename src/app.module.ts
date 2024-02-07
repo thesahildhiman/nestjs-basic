@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostModule } from './post/post.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './logging/logging.interceptor';
+import { GlobalExceptionFilterTestModule } from './global-exception-filter-test/global-exception-filter-test.module';
+import { GlobalExceptionFilter } from './global-exception-filter-test/global-exception.filter';
 
 @Module({
   imports: [
@@ -14,11 +16,13 @@ import { LoggingInterceptor } from './logging/logging.interceptor';
     ),
     UsersModule,
     PostModule,
+    GlobalExceptionFilterTestModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+    { provide: APP_FILTER, useClass: GlobalExceptionFilter },
   ],
 })
 export class AppModule {}

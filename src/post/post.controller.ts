@@ -79,7 +79,7 @@ export class PostController {
   // testing of data-validation.intersector
   @Post('test')
   @UseInterceptors(DataValidationInterceptor)
-  test(@Body('name') name: string) {
+  test(@Body() name: string) {
     console.log('---name---', name);
     return this.postService.test(name)
     // console.log('----after controller---')
