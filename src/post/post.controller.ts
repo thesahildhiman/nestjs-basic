@@ -7,6 +7,7 @@ import {
   Req,
   Res,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create_post.dto';
@@ -14,8 +15,9 @@ import { PostService } from './post.service';
 import { AuthGuard } from 'src/auth-guard/auth.guard';
 import { Request, Response } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
-import { RoleGuardGuard } from 'src/role-guard/role.guard';
+import { RoleGuard } from 'src/role-guard/role.guard';
 import { StatusUpdateDto } from './dto/status_update.dto';
+import { DataValidationInterceptor } from 'src/data-validation/data-validation.interceptor';
 
 interface extendedRequest extends Request {
   user?: any;
@@ -50,7 +52,7 @@ export class PostController {
   @Post('update-status')
   // @UseGuards(AuthGuard)
   @Roles('admin') //decorator
-  @UseGuards(RoleGuardGuard)
+  @UseGuards(RoleGuard)
   async updatePostStatus(
     @Body(ValidationPipe)
     statusDto: StatusUpdateDto,
@@ -72,5 +74,15 @@ export class PostController {
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  // testing of data-validation.intersector
+  @Post('test')
+  @UseInterceptors(DataValidationInterceptor)
+  test(@Body('name') name: string) {
+    console.log('---name---', name);
+    return this.postService.test(name)
+    // console.log('----after controller---')
+    // return
   }
 }

@@ -26,4 +26,9 @@ export class PostService {
     );
     return updatedPost;
   }
+
+  test(name: string) {
+    console.log('--inside service---',name);
+    return;
+  }
 }
